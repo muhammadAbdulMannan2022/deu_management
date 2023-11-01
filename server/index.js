@@ -50,6 +50,17 @@ async function run() {
       });
       res.status(200).send(store);
     });
+    app.post("/:id/pay", async (req, res) => {
+      const id = req.params.id;
+      const amount = req.body.amount;
+      const queire = { _id: new ObjectId(id) };
+      const projection = { projection: { _id: 1, amount: 1 } };
+      const resault = await usersCullectionDB.findOne(queire, projection);
+      const update = await usersCullectionDB.updateOne(queire, {
+        $set: { amount: Number(resault?.amount) - Number(amount) },
+      });
+      res.send(update);
+    });
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"

@@ -6,20 +6,44 @@ import { Link, useParams } from "react-router-dom";
 const Profile = () => {
   const { id } = useParams();
   const [store, setStore] = useState(null);
-  const [paidAmount, setPaidAmount] = useState();
+  const [due, setDue] = useState();
+  const [paidAmount, setPaidAmount] = useState(0);
   useEffect(() => {
     fetch(`http://localhost:5000/store/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setStore(data);
+        setDue(data?.amount);
       })
       .catch((err) => console.log(err));
   }, [id]);
   const handleChange = (e) => {
-    setPaidAmount(e.terget.value);
+    setPaidAmount(e.target.value);
   };
   const handleSubmit = (e) => {
-    toast.success("successfully paid");
+    if (
+      !isNaN(paidAmount) &&
+      Number(paidAmount) <= Number(store?.amount) &&
+      Number(paidAmount) > 0
+    ) {
+      fetch(`http://localhost:5000/${id}/pay`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ amount: paidAmount }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+          setDue(due - paidAmount);
+        })
+        .catch((err) => console.log(err));
+
+      toast.success("successfully paid");
+    } else {
+      toast.error("data is not currect");
+    }
   };
   return (
     <div className="bg-black h-screen text-white px-2 py-2">
@@ -35,10 +59,10 @@ const Profile = () => {
         <>
           <Toaster />
           <div>
-            <h1>name: {`muhammad`}</h1>
-            <h1>Phone: {`01500000000`}</h1>
+            <h1>name: {store?.name}</h1>
+            <h1>Phone: {store?.phoneNumber}</h1>
             <h1>
-              Due ammount: {`10000`}
+              Due ammount: {due}
               <small> tk</small>
             </h1>
             <div className="mb-4">
