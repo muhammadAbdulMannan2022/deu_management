@@ -69,9 +69,11 @@ const Store = ({ store }) => {
           <h3>due amount: {store?.amount}</h3>
         </div>
         <div className="text-gray-400 flex">
-          <button className="bg-green-500 text-white px-3 py-1 text-sm rounded-md">
-            pay
-          </button>
+          <Link to={`/user/${store?._id}`}>
+            <button className="bg-green-500 text-white px-3 py-1 text-sm rounded-md">
+              pay
+            </button>
+          </Link>
         </div>
       </div>
     </div>

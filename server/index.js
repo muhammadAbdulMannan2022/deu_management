@@ -43,6 +43,13 @@ async function run() {
 
       res.status(200).send(stores);
     });
+    app.get("/store/:id", async (req, res) => {
+      const id = req.params.id;
+      const store = await usersCullectionDB.findOne({
+        _id: new ObjectId(id),
+      });
+      res.status(200).send(store);
+    });
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"

@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import MainLayout from "../layout/MainLayout";
 import App from "../App";
 import AddTodo from "../pages/AddTodo";
+import Profile from "../pages/Profile";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
       {
         path: "/addstore",
         element: <AddTodo />,
+      },
+      {
+        path: "/user/:id",
+        element: <Profile />,
       },
     ],
   },
