@@ -10,7 +10,6 @@ const AddTodo = () => {
     name: "",
     phoneNumber: "",
     amount: "",
-    paidAmount: "",
   });
 
   const handleChange = (e) => {
@@ -27,9 +26,6 @@ const AddTodo = () => {
       typeof formData.name === "string" &&
       !isNaN(formData.phoneNumber) &&
       !isNaN(formData.amount) &&
-      !isNaN(formData.paidAmount) &&
-      Number(formData.paidAmount) <= Number(formData.amount) &&
-      Number(formData.paidAmount) > 0 &&
       Number(formData.amount) > 0
     ) {
       fetch("http://localhost:5000/addStore", {
@@ -46,10 +42,11 @@ const AddTodo = () => {
             name: "",
             phoneNumber: "",
             amount: "",
-            paidAmount: "",
           });
           toast.success("the store successfully added");
-          navigate("/");
+          setTimeout(() => {
+            navigate("/");
+          }, 1000);
         });
     } else {
       toast.error("plese fill up the data currectly");
@@ -108,20 +105,7 @@ const AddTodo = () => {
             className="bg-gray-700 text-white py-2 px-3 rounded-lg w-full"
           />
         </div>
-        <div className="mb-4">
-          <label htmlFor="paidAmount" className="block mb-2">
-            Paid Amount:
-          </label>
-          <input
-            type="text"
-            id="paidAmount"
-            name="paidAmount"
-            placeholder="paid amount"
-            value={formData.paidAmount}
-            onChange={handleChange}
-            className="bg-gray-700 text-white py-2 px-3 rounded-lg w-full"
-          />
-        </div>
+
         <button
           type="submit"
           className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"

@@ -32,6 +32,17 @@ async function run() {
       res.send(resault);
       console.log(store, "\n", resault);
     });
+    app.get("/stores", async (req, res) => {
+      const current_stack = 0;
+      const skipCount = (current_stack - 1) * 50;
+      const stores = await usersCullectionDB
+        .find()
+        .sort({ amount: -1 })
+        .limit(50)
+        .toArray();
+
+      res.status(200).send(stores);
+    });
     await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"

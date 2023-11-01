@@ -1,19 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus, FaSearch } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const [todos, setTodos] = useState([]);
+  const [stores, setStores] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   const handleAddTodo = () => {
     navigate("/addstore");
   };
-
-  const filteredTodos = todos.filter((todo) =>
-    todo.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    fetch("http://localhost:5000/stores")
+      .then((res) => res.json())
+      .then((data) => {
+        setStores(data);
+      })
+      .catch((err) => {
+        console.log("an error while fetching", err);
+      });
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white p-4">
@@ -42,9 +48,33 @@ const Home = () => {
           </button>
         </div>
       </div>
-      <div>{/* items */}</div>
+      <div className="flex flex-col gap-1">
+        {stores.map((store) => (
+          <Store key={store._id} store={store} />
+        ))}
+      </div>
     </div>
   );
 };
 
+const Store = ({ store }) => {
+  return (
+    <div className="flex flex-col gap-2 overflow-x-hidden overflow-y-scroll">
+      <div className="flex flex-wrap justify-between items-center border-gray-600 border px-1 py-1 rounded-sm bg-[#1a1a1a]">
+        <div className="text-gray-400">
+          <Link to={`/user/${store?._id}`}>
+            <h1 className="underline">name: {store?.name}</h1>
+          </Link>
+          <p>Phone: {store?.phoneNumber}</p>
+          <h3>due amount: {store?.amount}</h3>
+        </div>
+        <div className="text-gray-400 flex">
+          <button className="bg-green-500 text-white px-3 py-1 text-sm rounded-md">
+            pay
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 export default Home;
