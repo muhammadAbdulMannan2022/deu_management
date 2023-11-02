@@ -10,7 +10,7 @@ const Profile = () => {
   const [paidAmount, setPaidAmount] = useState("");
   const [addMoreDue, setAddMoreDue] = useState("");
   useEffect(() => {
-    fetch(`http://localhost:5000/store/${id}`)
+    fetch(`https://server-weld-five.vercel.app/store/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setStore(data);
@@ -27,7 +27,7 @@ const Profile = () => {
       Number(paidAmount) <= Number(store?.amount) &&
       Number(paidAmount) > 0
     ) {
-      fetch(`http://localhost:5000/${id}/pay`, {
+      fetch(`https://server-weld-five.vercel.app/${id}/pay`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -53,7 +53,7 @@ const Profile = () => {
       Number(addMoreDue) <= Number(store?.amount) &&
       Number(addMoreDue) > 0
     ) {
-      fetch(`http://localhost:5000/${id}/addDue`, {
+      fetch(`https://server-weld-five.vercel.app/${id}/addDue`, {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -106,7 +106,7 @@ const Profile = () => {
                   pay :
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   id="name"
                   name="name"
                   placeholder="amount"
@@ -128,7 +128,7 @@ const Profile = () => {
                   add more due :
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   id="moredue"
                   name="moredue"
                   placeholder="amount"
@@ -181,7 +181,7 @@ const Profile = () => {
                   className="border-b"
                   key={payWDate[0] + Math.floor(Math.random() * 5)}
                 >
-                  Due: {payWDate[1]} <small> tk</small>
+                  payment: {payWDate[1]} <small> tk</small>
                   <br /> Date : {payWDate[0]}
                 </h1>
               ))}

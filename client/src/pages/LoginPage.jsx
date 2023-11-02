@@ -14,7 +14,7 @@ function LoginPage() {
     // You can implement your authentication logic here
     logInUserEmailPassword(email, password)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setErrorMessage("");
         navigate("/");
       })

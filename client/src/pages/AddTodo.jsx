@@ -32,13 +32,14 @@ const AddTodo = () => {
     // For now, we'll just display the entered data in the console
     console.log(formData);
     formData.dueDate = [[`${date}/${month}/${time}`, formData.amount]];
+    formData.name = formData.name.trim();
     if (
       typeof formData.name === "string" &&
       !isNaN(formData.phoneNumber) &&
       !isNaN(formData.amount) &&
       Number(formData.amount) > 0
     ) {
-      fetch("http://localhost:5000/addStore", {
+      fetch("https://server-weld-five.vercel.app/addStore", {
         method: "POST",
         headers: {
           "content-type": "application/json",

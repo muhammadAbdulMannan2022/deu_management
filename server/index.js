@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const uri = `mongodb+srv://abdulkadir9311:ApueNiPvPVhfVxj2@cluster0.h5xjjjr.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.h5xjjjr.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -34,14 +34,15 @@ async function run() {
       const store = req.body;
       const resault = await usersCullectionDB.insertOne(store);
       res.send(resault);
-      console.log(store, "\n", resault);
+      // console.log(store, "\n", resault);
     });
-    app.get("/stores", async (req, res) => {
-      const current_stack = 0;
-      const skipCount = (current_stack - 1) * 50;
+    app.post("/stores", async (req, res) => {
+      const current_stack = req.body.count;
+      const skipCount = current_stack * 50;
       const stores = await usersCullectionDB
         .find()
         .sort({ amount: -1 })
+        .skip(skipCount)
         .limit(50)
         .toArray();
 
@@ -91,7 +92,7 @@ async function run() {
     });
     app.post("/search", async (req, res) => {
       const name = req.body.name;
-      console.log(name, res.body);
+      // console.log(name, req.body);
       const resault = await usersCullectionDB.find({ name: name }).toArray();
       res.send(resault);
     });

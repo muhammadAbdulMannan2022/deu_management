@@ -1,17 +1,30 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaPlus, FaSearch } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../providers/AuthProvider";
 
 const Home = () => {
   const [stores, setStores] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const { logOutUser } = useContext(AuthContext);
+  const [count, setCount] = useState(0);
   const navigate = useNavigate();
 
   const handleAddTodo = () => {
     navigate("/addstore");
   };
+  const handleCount = () => {
+    setCount((prev) => prev + 1);
+  };
   useEffect(() => {
-    fetch("http://localhost:5000/stores")
+    fetch("https://server-weld-five.vercel.app/stores", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ count }),
+    })
       .then((res) => res.json())
       .then((data) => {
         setStores(data);
@@ -19,11 +32,20 @@ const Home = () => {
       .catch((err) => {
         console.log("an error while fetching", err);
       });
-  }, []);
+  }, [count]);
+  const handleLogOut = () => {
+    logOutUser()
+      .then((data) => {
+        // do somthing
+        console.log("logout success full");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const handleSerch = () => {
-    console.log(searchTerm);
     if (searchTerm !== "") {
-      fetch("http://localhost:5000/search", {
+      fetch("https://server-weld-five.vercel.app/search", {
         method: "POST",
         headers: {
           "content-type": "application/json",
@@ -45,9 +67,26 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-black text-white p-4">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-semibold">
-          <span>H</span>
+        <h1 className="text-3xl font-semibold shadow rounded-full">
+          <span
+            onClick={() => setIsOpen(!isOpen)}
+            className="border px-1 rounded-lg cursor-pointer"
+          >
+            D
+          </span>
         </h1>
+        <div
+          className={`absolute z-10 top-12 left-12 ${
+            isOpen ? "visible" : "hidden"
+          }`}
+        >
+          <button
+            onClick={handleLogOut}
+            className="px-2 py-1 rounded bg-green-500 shadow-xl"
+          >
+            log out
+          </button>
+        </div>
         <div className="flex items-center space-x-2">
           <div className="relative">
             <input
@@ -55,6 +94,9 @@ const Home = () => {
               placeholder="Search Todo"
               className="bg-gray-700 text-white py-2 px-3 pr-10 rounded-lg w-48"
               value={searchTerm}
+              onKeyDown={(e) => {
+                e.key === "Enter" && handleSerch();
+              }}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <div
@@ -72,10 +114,25 @@ const Home = () => {
           </button>
         </div>
       </div>
-      <div className="flex flex-col gap-1">
-        {stores.map((store) => (
-          <Store key={store._id} store={store} />
-        ))}
+      <div className="flex flex-col gap-1 overflow-y-scroll">
+        {stores.length <= 0 ? (
+          <h1 className="text-center mt-5 text-xl text-gray-600">
+            you did not add any store. <br />
+            add a store now!
+          </h1>
+        ) : (
+          stores.map((store) => <Store key={store._id} store={store} />)
+        )}
+      </div>
+      <div className="flex items-center justify-center relative bottom-0 mt-5">
+        <button
+          onClick={handleCount}
+          className={`px-2 rounded-md bg-green-500 ${
+            stores.length < 49 && "hidden"
+          }`}
+        >
+          more ...
+        </button>
       </div>
     </div>
   );
@@ -83,7 +140,7 @@ const Home = () => {
 
 const Store = ({ store }) => {
   return (
-    <div className="flex flex-col gap-2 overflow-x-hidden overflow-y-scroll">
+    <div className="flex flex-col gap-2 overflow-x-hidden">
       <div className="flex flex-wrap justify-between items-center border-gray-600 border px-1 py-1 rounded-sm bg-[#1a1a1a]">
         <div className="text-gray-400">
           <Link to={`/user/${store?._id}`}>
