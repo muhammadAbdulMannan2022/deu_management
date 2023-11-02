@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cazjtjr.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://abdulkadir9311:ApueNiPvPVhfVxj2@cluster0.h5xjjjr.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -60,6 +60,12 @@ async function run() {
         $set: { amount: Number(resault?.amount) - Number(amount) },
       });
       res.send(update);
+    });
+    app.post("/search", async (req, res) => {
+      const name = req.body.name;
+      console.log(name, res.body);
+      const resault = await usersCullectionDB.find({ name: name }).toArray();
+      res.send(resault);
     });
     await client.db("admin").command({ ping: 1 });
     console.log(

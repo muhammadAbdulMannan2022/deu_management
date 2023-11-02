@@ -20,7 +20,28 @@ const Home = () => {
         console.log("an error while fetching", err);
       });
   }, []);
-
+  const handleSerch = () => {
+    console.log(searchTerm);
+    if (searchTerm !== "") {
+      fetch("http://localhost:5000/search", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ name: searchTerm }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.length >= 0) {
+            setStores(data);
+          }
+          console.log(data);
+        })
+        .catch((err) => {
+          console.log("an error while fetching", err);
+        });
+    }
+  };
   return (
     <div className="min-h-screen bg-black text-white p-4">
       <div className="flex items-center justify-between mb-4">
@@ -36,7 +57,10 @@ const Home = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <div className="absolute top-0 right-0 h-full flex items-center pr-3">
+            <div
+              onClick={handleSerch}
+              className="absolute top-0 right-0 h-full flex items-center pr-3 cursor-pointer"
+            >
               <FaSearch className="text-gray-400" />
             </div>
           </div>

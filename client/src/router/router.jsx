@@ -3,6 +3,8 @@ import MainLayout from "../layout/MainLayout";
 import App from "../App";
 import AddTodo from "../pages/AddTodo";
 import Profile from "../pages/Profile";
+import LoginPage from "../pages/LoginPage";
+import Private from "../Private/Private";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -10,15 +12,31 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <App />,
+        element: (
+          <Private>
+            <App />
+          </Private>
+        ),
       },
       {
         path: "/addstore",
-        element: <AddTodo />,
+        element: (
+          <Private>
+            <AddTodo />
+          </Private>
+        ),
       },
       {
         path: "/user/:id",
-        element: <Profile />,
+        element: (
+          <Private>
+            <Profile />
+          </Private>
+        ),
+      },
+      {
+        path: "/login",
+        element: <LoginPage />,
       },
     ],
   },

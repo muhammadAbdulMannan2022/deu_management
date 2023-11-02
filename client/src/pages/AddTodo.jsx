@@ -22,6 +22,7 @@ const AddTodo = () => {
     // You can handle the submission of the form data here
     // For now, we'll just display the entered data in the console
     console.log(formData);
+
     if (
       typeof formData.name === "string" &&
       !isNaN(formData.phoneNumber) &&
