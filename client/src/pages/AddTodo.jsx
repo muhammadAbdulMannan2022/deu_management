@@ -5,16 +5,25 @@ import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const AddTodo = () => {
+  const [date, month, time] = new Date()
+    .toLocaleString()
+    .split(",")[0]
+    .split("/");
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
     amount: "",
+    dueDate: [],
+    lastPayment: [],
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
   const handleSubmit = (e) => {
@@ -22,7 +31,7 @@ const AddTodo = () => {
     // You can handle the submission of the form data here
     // For now, we'll just display the entered data in the console
     console.log(formData);
-
+    formData.dueDate = [[`${date}/${month}/${time}`, formData.amount]];
     if (
       typeof formData.name === "string" &&
       !isNaN(formData.phoneNumber) &&

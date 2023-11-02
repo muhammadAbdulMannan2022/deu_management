@@ -3,6 +3,10 @@ const app = express();
 const cors = require("cors");
 require("dotenv").config();
 const port = process.env.PORT || 5000;
+const [date, month, time] = new Date()
+  .toLocaleString()
+  .split(",")[0]
+  .split("/");
 // middelwer
 app.use(cors());
 app.use(express.json());
@@ -54,10 +58,34 @@ async function run() {
       const id = req.params.id;
       const amount = req.body.amount;
       const queire = { _id: new ObjectId(id) };
-      const projection = { projection: { _id: 1, amount: 1 } };
+      const projection = { projection: { _id: 1, amount: 1, lastPayment: 1 } };
       const resault = await usersCullectionDB.findOne(queire, projection);
       const update = await usersCullectionDB.updateOne(queire, {
-        $set: { amount: Number(resault?.amount) - Number(amount) },
+        $set: {
+          amount: Number(resault?.amount) - Number(amount),
+          lastPayment: [
+            ...resault?.lastPayment,
+            [`${`${date}/${month}/${time}`}`, amount],
+          ],
+        },
+      });
+      res.send(update);
+    });
+    // add more due
+    app.post("/:id/addDue", async (req, res) => {
+      const newAmaunt = req.body.newAmaunt;
+      const id = req.params.id;
+      const queire = { _id: new ObjectId(id) };
+      const projection = { projection: { _id: 1, amount: 1, dueDate: 1 } };
+      const resault = await usersCullectionDB.findOne(queire, projection);
+      const update = await usersCullectionDB.updateOne(queire, {
+        $set: {
+          amount: Number(resault?.amount) + Number(newAmaunt),
+          dueDate: [
+            ...resault.dueDate,
+            [`${`${date}/${month}/${time}`}`, newAmaunt],
+          ],
+        },
       });
       res.send(update);
     });

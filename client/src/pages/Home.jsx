@@ -90,7 +90,9 @@ const Store = ({ store }) => {
             <h1 className="underline">name: {store?.name}</h1>
           </Link>
           <p>Phone: {store?.phoneNumber}</p>
-          <h3>due amount: {store?.amount}</h3>
+          <h3>
+            current due: {store?.amount} <small>tk</small>
+          </h3>
         </div>
         <div className="text-gray-400 flex">
           <Link to={`/user/${store?._id}`}>
